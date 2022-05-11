@@ -84,7 +84,7 @@
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <input id="symbolInput" class="form-control form-control-dark w-100" type="text" placeholder="type in stock symbol" aria-label="Search">
   <div class="navbar-nav">
     <div class="nav-item text-nowrap">
       <a class="nav-link px-5" ></a>
@@ -255,33 +255,6 @@
           </tbody>
         </table>
       </div>
-      <h2>Balance Sheets</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th scope="col">Year</th>
-              <th scope="col">Renevue</th>
-              <th scope="col">Ebit</th>
-              <th scope="col">IncomeBeforeTax</th>
-              <th scope="col">NetIncome</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for statement in data.incomestatements %}
-
-              <tr>
-                  <td>{{statement['fiscalDateEnding']}}</td>
-                  <td>{{statement['totalRevenue']}} {{statement['reportedCurrency']}}</td>
-                  <td>{{statement['ebit']}} {{statement['reportedCurrency']}}</td>
-                  <td>{{statement['incomeBeforeTax']}} {{statement['reportedCurrency']}}</td>
-                  <td>{{statement['netIncome']}} {{statement['reportedCurrency']}}</td>
-              </tr>
-              
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
     </main>
   </div>
 </div>
@@ -333,6 +306,20 @@
                       'data': [{% for item in data[key]['data'] %}{{item}},{% endfor %}]
                     }
         {% endfor %}
+      </script>
+      <script>
+        
+        var input = document.getElementById("symbolInput");
+
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function(event) {
+          // If the user presses the "Enter" key on the keyboard
+          if (event.key === "Enter") {
+            var textinput = document.getElementById("symbolInput").value;
+            window.location = '/stock/'+textinput
+          }
+        });
+
       </script>
       <script>
           // Graphs

@@ -90,6 +90,22 @@ def getChartData(data):
     newdata['data'].reverse()
     return newdata
 
+def modifyOverview(data):
+    newdata = data
+    newdata['MarketCapitalization'] =  numerize.numerize(int(newdata['MarketCapitalization']))
+    return newdata
+
+def modifyIncomeStatement(data):
+    newdata = data
+    for statement in range(len(data)):
+        newdata[statement]['totalRevenue'] = numerize.numerize(int(newdata[statement]['totalRevenue']))
+        newdata[statement]['ebit'] = numerize.numerize(int(newdata[statement]['ebit']))
+        newdata[statement]['incomeBeforeTax'] = numerize.numerize(int(newdata[statement]['incomeBeforeTax']))
+        newdata[statement]['netIncome'] = numerize.numerize(int(newdata[statement]['netIncome']))
+
+    return newdata
+
+
 def getAnnualData(data):
     return data
 
@@ -112,43 +128,45 @@ def randomImages():
 
 @app.route('/stock/<symbol>')
 def stockSite(symbol):
-    now = datetime.date.today()
-    today = now.strftime('%Y-%m-%d')
-    lastWeek = (now + dateutil.relativedelta.relativedelta(weeks=-1)).strftime('%Y-%m-%d')
-    lastMonth = (now + dateutil.relativedelta.relativedelta(months=-1)).strftime('%Y-%m-%d')
-    lastYear = (now + dateutil.relativedelta.relativedelta(years=-1)).strftime('%Y-%m-%d')
-    last5Year = (now + dateutil.relativedelta.relativedelta(years=-5)).strftime('%Y-%m-%d')
+    #try:
+        now = datetime.date.today()
+        today = now.strftime('%Y-%m-%d')
+        lastWeek = (now + dateutil.relativedelta.relativedelta(weeks=-1)).strftime('%Y-%m-%d')
+        lastMonth = (now + dateutil.relativedelta.relativedelta(months=-1)).strftime('%Y-%m-%d')
+        lastYear = (now + dateutil.relativedelta.relativedelta(years=-1)).strftime('%Y-%m-%d')
+        last5Year = (now + dateutil.relativedelta.relativedelta(years=-5)).strftime('%Y-%m-%d')
 
+        intraday = getApiData('TIME_SERIES_INTRADAY', symbol)
+        daily = getApiData('TIME_SERIES_DAILY', symbol)
+        monthly = getApiData('TIME_SERIES_MONTHLY', symbol)
+        overview = getApiData('OVERVIEW', symbol)
+        #balancesheets = getApiData('BALANCE_SHEET', symbol)
+        incomestatements = getApiData('INCOME_STATEMENT', symbol)
 
-    intraday = getApiData('TIME_SERIES_INTRADAY', symbol)
-    daily = getApiData('TIME_SERIES_DAILY', symbol)
-    monthly = getApiData('TIME_SERIES_MONTHLY', symbol)
-    overview = getApiData('OVERVIEW', symbol)
-    #balancesheets = getApiData('BALANCE_SHEET', symbol)
-    incomestatements = getApiData('INCOME_STATEMENT', symbol)
-
-    intradaydata = getChartData(splitKeyName(reduceToCloseValue(intraday['Time Series (5min)'])))
-    weekdata = getChartData(reduceToCloseValue(limitDateRange(lastWeek, today, daily['Time Series (Daily)'] )))
-    monthdata = getChartData(reduceToCloseValue(limitDateRange(lastMonth, today, daily['Time Series (Daily)'] )))
-    yeardata = getChartData(reduceToCloseValue(limitDateRange(lastYear, today, monthly['Monthly Time Series'] )))
-    fiveyeardata = getChartData(reduceToCloseValue(limitDateRange(last5Year, today, monthly['Monthly Time Series'] )))
-    maxdata = getChartData(reduceToCloseValue(monthly['Monthly Time Series']))
-    overviewdata = overview
-    #balancesheetsdata = balancesheets['annualReports']
-    incomestatementsdata =  incomestatements['annualReports']
-    
-    #data = getApiData('TIME_SERIES_DAILY', symbol)
-    #diff = reduceToDiff(data['Time Series (Daily)']['2022-04-14'])
-    #daterange = limitDateRange("2021-01-08", "2022-04-18", data['Time Series (Daily)'] )
-    #diff = reduceToDiff(daterange)
-    #closeValues = reduceToCloseValue(daterange)
-    #onlyFriday = limitSpecificWeekday('Friday', daterange)
-    #onlyFridayDiff = reduceToDiff(onlyFriday)
-    #stockdata = getLabels(closeValues)
-    
-    #data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'balancesheets': balancesheetsdata, 'incomestatements': incomestatementsdata }
-    data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'incomestatements': incomestatementsdata }
-    return render_template('index.html', overview = overview, data = data)
+        intradaydata = getChartData(splitKeyName(reduceToCloseValue(intraday['Time Series (5min)'])))
+        weekdata = getChartData(reduceToCloseValue(limitDateRange(lastWeek, today, daily['Time Series (Daily)'] )))
+        monthdata = getChartData(reduceToCloseValue(limitDateRange(lastMonth, today, daily['Time Series (Daily)'] )))
+        yeardata = getChartData(reduceToCloseValue(limitDateRange(lastYear, today, monthly['Monthly Time Series'] )))
+        fiveyeardata = getChartData(reduceToCloseValue(limitDateRange(last5Year, today, monthly['Monthly Time Series'] )))
+        maxdata = getChartData(reduceToCloseValue(monthly['Monthly Time Series']))
+        overviewdata = modifyOverview(overview)
+        #balancesheetsdata = balancesheets['annualReports']
+        incomestatementsdata =  modifyIncomeStatement(incomestatements['annualReports'])
+        
+        #data = getApiData('TIME_SERIES_DAILY', symbol)
+        #diff = reduceToDiff(data['Time Series (Daily)']['2022-04-14'])
+        #daterange = limitDateRange("2021-01-08", "2022-04-18", data['Time Series (Daily)'] )
+        #diff = reduceToDiff(daterange)
+        #closeValues = reduceToCloseValue(daterange)
+        #onlyFriday = limitSpecificWeekday('Friday', daterange)
+        #onlyFridayDiff = reduceToDiff(onlyFriday)
+        #stockdata = getLabels(closeValues)
+        
+        #data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'balancesheets': balancesheetsdata, 'incomestatements': incomestatementsdata }
+        data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'incomestatements': incomestatementsdata }
+        return render_template('index.html', overview = overview, data = data)
+    #except:
+    #    return render_template('notAvailable.html')
    
 
 @app.route('/stock')
@@ -160,3 +178,8 @@ def example():
     #intradaydata = getChartData(splitKeyName(reduceToCloseValue(intraday['Time Series (5min)'])))
 
     return incomestatementsdata
+
+
+@app.route('/notFound')
+def notAvailable():
+    return render_template('notAvailable.html')
