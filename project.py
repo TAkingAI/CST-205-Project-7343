@@ -20,6 +20,8 @@ from numerize import numerize
 endpoint = 'https://www.alphavantage.co/query?'
 my_keys = ['DSEC20YGZLK3JE12', '4146MARPBSQSB99J', 'DXY63PIFFPJVX3FM', '99AB07D80GEJAEJB', '77DVW67VV7G27YLF', 'QQ97SRZ0AAULXKXV' ]
 
+storedaily = {}
+
 def getRandomApiKey():
     return random.choice(my_keys)
 
@@ -59,6 +61,19 @@ def reduceToDiff(data):
         newdata[key] = round(calculateDiff(data[key])*100, 2)
     return newdata
 
+def reduceToOneDiff(data):
+    diff = 0.0
+    numDays = 0
+    for key in data:
+        diff+=data[key]
+        numDays+=1
+    
+    try:
+        return round(diff/numDays, 2)
+    except:
+        return 0.0
+    
+
 def reduceToCloseValue(data):
     newdata = {}
     for key in data:
@@ -80,6 +95,29 @@ def limitSpecificWeekday(day, data):
             newdata[key] = data[key]
     return newdata
 
+def groupByDay(data):
+    weekdays = ["Friday", "Thursday", "Wednesday", "Tuesday", "Monday"]
+    newdata = {}
+    for day in weekdays:
+        newdata[day] = reduceToOneDiff(limitSpecificWeekday(day, data))
+
+    return newdata
+
+def limitSpecificMonth(month, data):
+    newdata = {}
+    for key in data:
+        ymd = key.split("-")
+        if ((datetime.datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))).strftime("%b") == month):
+            newdata[key] = data[key]
+    return newdata
+
+def groupByMonth(data):
+    months = ["Dec", "Nov", "Oct", "Sep", "Aug", "Jul", "Jun", "May", "Apr", "Mar", "Feb", "Jan"]
+    newdata = {}
+    for month in months:
+        newdata[month] = reduceToOneDiff(limitSpecificMonth(month, data))
+
+    return newdata
 
 def getChartData(data):
     newdata = {'labels': [], 'data': []}
@@ -117,18 +155,13 @@ def getAnnualData(data):
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 
-# route decorator binds a function to a URL
-# start random images site
 @app.route('/')
-def randomImages():
-    today = datetime.date.today()
-    lastMonth = today + dateutil.relativedelta.relativedelta(weeks=-1)
-    return (lastMonth.strftime('%Y-%m-%d'))
-
+def start():
+    return render_template('start.html')
 
 @app.route('/stock/<symbol>')
-def stockSite(symbol):
-    #try:
+def stock(symbol):
+    try:
         now = datetime.date.today()
         today = now.strftime('%Y-%m-%d')
         lastWeek = (now + dateutil.relativedelta.relativedelta(weeks=-1)).strftime('%Y-%m-%d')
@@ -138,6 +171,7 @@ def stockSite(symbol):
 
         intraday = getApiData('TIME_SERIES_INTRADAY', symbol)
         daily = getApiData('TIME_SERIES_DAILY', symbol)
+        storedaily[symbol] = daily
         monthly = getApiData('TIME_SERIES_MONTHLY', symbol)
         overview = getApiData('OVERVIEW', symbol)
         #balancesheets = getApiData('BALANCE_SHEET', symbol)
@@ -153,31 +187,32 @@ def stockSite(symbol):
         #balancesheetsdata = balancesheets['annualReports']
         incomestatementsdata =  modifyIncomeStatement(incomestatements['annualReports'])
         
-        #data = getApiData('TIME_SERIES_DAILY', symbol)
-        #diff = reduceToDiff(data['Time Series (Daily)']['2022-04-14'])
-        #daterange = limitDateRange("2021-01-08", "2022-04-18", data['Time Series (Daily)'] )
-        #diff = reduceToDiff(daterange)
-        #closeValues = reduceToCloseValue(daterange)
-        #onlyFriday = limitSpecificWeekday('Friday', daterange)
-        #onlyFridayDiff = reduceToDiff(onlyFriday)
-        #stockdata = getLabels(closeValues)
-        
-        #data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'balancesheets': balancesheetsdata, 'incomestatements': incomestatementsdata }
         data = {'intraday': intradaydata , 'week': weekdata, 'month': monthdata, 'year': yeardata, 'fiveyears': fiveyeardata, 'max': maxdata, 'overview': overviewdata, 'incomestatements': incomestatementsdata }
-        return render_template('index.html', overview = overview, data = data)
-    #except:
-    #    return render_template('notAvailable.html')
+        return render_template('stock.html', overview = overview, data = data, symbol = symbol)
+    except:
+        return render_template('notAvailable.html')
    
+@app.route('/chart/<symbol>/<startdate>/<enddate>/<group>')
+def chart(symbol, startdate, enddate, group):
+    daily = {}
+    try:
+        daily = storedaily[symbol]
+    except:
+        daily = getApiData('TIME_SERIES_DAILY', symbol)
+    
+    data = limitDateRange(startdate, enddate, daily['Time Series (Daily)'] )
+    charttype = ""
+    if group=="day":
+        data = getChartData(groupByDay(reduceToDiff((data))))
+        charttype = "bar"
+    elif group == "month":
+        data = getChartData(groupByMonth(reduceToDiff((data))))
+        charttype = "bar"
+    elif group == "none":
+        data = getChartData(reduceToCloseValue((data)))
+        charttype = "line"
 
-@app.route('/stock')
-def example():
-    #return render_template('index.html' )
-    incomestatements = getApiData('INCOME_STATEMENT', 'IBM')
-    incomestatementsdata = incomestatements['annualReports'][0]
-    #intraday = getApiData('TIME_SERIES_INTRADAY', "IBM")
-    #intradaydata = getChartData(splitKeyName(reduceToCloseValue(intraday['Time Series (5min)'])))
-
-    return incomestatementsdata
+    return render_template('chart.html',  data = {'data': data}, charttype= charttype, symbol=symbol, startdate=startdate, enddate=enddate )
 
 
 @app.route('/notFound')

@@ -80,7 +80,7 @@
   <body>
     
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Stock Data Analyzer</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{ url_for('start') }}">Stock Data Analyzer</a>
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -98,9 +98,177 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-11 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">symbol not found or API limit reached (try different symbol or try later again) </h1>
+        <h1 class="h2">Trending stocks</h1>
       </div>
       
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">APPLE</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='AAPL') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">BOEING</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='BA') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">MICROSOFT</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='MSFT') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">DISNEY</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='DIS') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">NIKE</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='NKE') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">VISA</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='V') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">INTEL</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='INTC') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">COCA-COLA</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='KO') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">CISCO</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='CSCO') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">WALMART</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='WMT') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">VERIZON</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='VZ') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">SALESFORCE</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='CRM') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">IBM</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='IBM') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">JPMORGAN CHASE</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='IBM') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">3M</h5>
+                <a class="btn btn-dark" href="{{ url_for('stock', symbol='MMM') }}" role="button">see more</a>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>

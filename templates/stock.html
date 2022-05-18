@@ -1,53 +1,436 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Dashboard Template · Bootstrap v5.1</title>
+
     {{ bootstrap.load_css() }}
     {{ bootstrap.load_js() }}
-
     
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-              </li>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    <style>
+      body {
+        font-size: .875rem;
+      }
+
+      .feather {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+      }
+
+
+      /*
+      * Navbar
+      */
+
+      .navbar-brand {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, .25);
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+      }
+
+      .navbar .navbar-toggler {
+        top: .25rem;
+        right: 1rem;
+      }
+
+      .navbar .form-control {
+        padding: .75rem 1rem;
+        border-width: 0;
+        border-radius: 0;
+      }
+
+      .form-control-dark {
+        color: #fff;
+        background-color: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .1);
+      }
+
+      .form-control-dark:focus {
+        border-color: transparent;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+      }
+
+    </style>
+  
+
+  </head>
+  <body>
+    
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{ url_for('start') }}">Stock Data Analyzer</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <input id="symbolInput" class="form-control form-control-dark w-100" type="text" placeholder="type in stock symbol" aria-label="Search">
+  <div class="navbar-nav">
+    <div class="nav-item text-nowrap">
+      <a class="nav-link px-5" ></a>
+    </div>
+  </div>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+    
+
+    <main class="col-md-9 ms-sm-auto col-lg-11 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{overview['Name']}} ({{overview['Symbol']}})</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#optionsModal">Advanced Options</button>
+          </div>
+          
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <span data-feather="calendar"></span>
+              
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" onclick="updateChart(myChart, intraday)">Intraday</a></li>
+              <li><a class="dropdown-item" onclick="updateChart(myChart, week)">Week</a></li>
+              <li><a class="dropdown-item" onclick="updateChart(myChart, month)">Month</a></li>
+              <li><a class="dropdown-item" onclick="updateChart(myChart, year)">Year</a></li>
+              <li><a class="dropdown-item" onclick="updateChart(myChart, fiveyears)">5 Years</a></li>
+              <li><a class="dropdown-item" onclick="updateChart(myChart, max)">Max</a></li>
             </ul>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
           </div>
         </div>
-      </nav>
-   <p>{{stockdata}}</p>
-    
-</body>
+
+      </div>
+      
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+      </canvas>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Exchange: </h5><h3>{{data['overview']['Exchange']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Sector: </h5><h3>{{data['overview']['Sector']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Currency: </h5><h3>{{data['overview']['Currency']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">52WeekHigh: </h5><h3>{{data['overview']['52WeekHigh']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">52WeekLow: </h5><h3>{{data['overview']['52WeekLow']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">200DayMovingAverage: </h5><h3>{{data['overview']['200DayMovingAverage']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">MarketCapitalization: </h5><h3>{{data['overview']['MarketCapitalization']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">DividendPerShare: </h5><h3>{{data['overview']['DividendPerShare']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">DividendYield: </h5><h3>{{data['overview']['DividendYield']}}</h3>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p></p>
+      
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Company Description
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              {{data['overview']['Description']}}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <p></p>
+      
+      <h2>Income Statements</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Year</th>
+              <th scope="col">Renevue</th>
+              <th scope="col">Ebit</th>
+              <th scope="col">IncomeBeforeTax</th>
+              <th scope="col">NetIncome</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for statement in data.incomestatements %}
+
+              <tr>
+                  <td>{{statement['fiscalDateEnding']}}</td>
+                  <td>{{statement['totalRevenue']}} {{statement['reportedCurrency']}}</td>
+                  <td>{{statement['ebit']}} {{statement['reportedCurrency']}}</td>
+                  <td>{{statement['incomeBeforeTax']}} {{statement['reportedCurrency']}}</td>
+                  <td>{{statement['netIncome']}} {{statement['reportedCurrency']}}</td>
+              </tr>
+              
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+      <script>
+        (function () {
+          'use strict'
+
+          feather.replace({ 'aria-hidden': 'true' })
+
+          // Graphs
+          var ctx = document.getElementById('myChart')
+          // eslint-disable-next-line no-unused-vars
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: 
+              intraday['labels'],
+              datasets: [{
+                data: intraday['data'],
+                lineTension: 0,
+                backgroundColor: 'transparent',
+                borderColor: '#007bff',
+                borderWidth: 4,
+                pointBackgroundColor: '#007bff'
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: false
+                  }
+                }]
+              },
+              legend: {
+                display: false
+              }
+            }
+          })
+        })()
+      </script>
+      <script>
+          var symbol = "{{symbol}}"
+        {% for key in data %}
+          var {{key}} = {'labels': [{% for item in data[key]['labels'] %}"{{item}}",{% endfor %}],
+                      'data': [{% for item in data[key]['data'] %}{{item}},{% endfor %}]
+                    }
+        {% endfor %}
+      </script>
+      <script>
+        
+        var input = document.getElementById("symbolInput");
+
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function(event) {
+          // If the user presses the "Enter" key on the keyboard
+          if (event.key === "Enter") {
+            var textinput = document.getElementById("symbolInput").value;
+            window.location = '/stock/'+textinput
+          }
+        });
+
+      </script>
+      <script>
+        function showChart() {
+            startdate = document.getElementById("startdate").value
+            enddate = document.getElementById("enddate").value
+            group = "none"
+
+            if(document.getElementById('flexRadioDefault2').checked){
+              group = "day"
+            } else if (document.getElementById('flexRadioDefault3').checked){
+              group = "month"
+            }
+
+            window.open("/chart"+"/"+symbol+"/"+startdate+"/"+enddate+"/"+group, "_blank");
+        } 
+      </script>
+      <script>
+          // Graphs
+          var ctx = document.getElementById('myChart')
+          // eslint-disable-next-line no-unused-vars
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: 
+              intraday['labels'],
+              datasets: [{
+                data: intraday['data'],
+                lineTension: 0,
+                backgroundColor: 'transparent',
+                borderColor: '#007bff',
+                borderWidth: 4,
+                pointBackgroundColor: '#007bff'
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: false
+                  }
+                }]
+              },
+              legend: {
+                display: false
+              }
+            }
+          })
+        
+      </script>
+      <script>
+        function updateChart(chart, data){
+          chart.data.labels = data['labels']
+          chart.data.datasets[0].data = data['data']
+          myChart.update()
+        }
+      </script>
+
+      <div class="modal" id="optionsModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Advanced Options</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+              <b>Time period</b>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label style="background-color: rgb(70, 156, 255)" class="input-group-text" for="inputGroupSelect01">Startdate</label>
+                </div>
+                <input type="date" id="startdate" class="form-control">
+                &nbsp; &nbsp;
+                <div class="input-group-prepend">
+                  <label style="background-color:  rgb(70, 156, 255)" class="input-group-text" for="inputGroupSelect01">Enddate</label>
+                </div>
+                <input type="date" id="enddate" class="form-control">
+              </div>
+              <p></p>
+              <p></p>
+              <b>Group by</b>
+              &nbsp; &nbsp;
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  none (default)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Weekday
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                <label class="form-check-label" for="flexRadioDefault3">
+                  Month
+                </label>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="showChart()">Show chart</button>
+              </div>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+  </body>
 </html>
