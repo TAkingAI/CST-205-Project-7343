@@ -5,6 +5,9 @@ Date: 2022-05-20
 Github: https://github.com/TAkingAI/CST-205-Project-7343
 
 How to start:
+make sure you installed all libraries into your virtual environment
+activate your virtual environment
+navigate to project
 start flask application with "flask run"
 paste url of local server in browser (e.g. http://127.0.0.1:5000) -> start site of application opens
 

@@ -6,6 +6,7 @@
 # May 20, 2022
 # GitHub: https://github.com/TAkingAI/CST-205-Project-7343
 
+
 from numerize import numerize
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
